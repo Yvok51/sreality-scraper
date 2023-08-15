@@ -1,4 +1,6 @@
-.vscode
+.vscode/
 geckodriver*
 notes.md
+log*
+__pycache__/
 

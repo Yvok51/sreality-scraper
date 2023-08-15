@@ -7,22 +7,26 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-SREALITY_URL = "https://www.sreality.cz/en"
-FLATS_SEARCH_URL = SREALITY_URL + "/search/apartments"
-FLATS_URL = SREALITY_URL + "/search/for-sale/apartments"
+from app import app
 
-APARTMENTS_TO_SCRAPE = 500
+SREALITY_URL = "https://www.sreality.cz"
+FLATS_SEARCH_URL = SREALITY_URL + "/en/search/apartments"
+FLATS_URL = SREALITY_URL + "/en/search/for-sale/apartments"
 
 
 def main():
-    apartments = scrape_info()
+    print(scrape_info())
 
 
 def scrape_info():
+    """
+    Scrape the first 500 apartment listings from sreality.cz
+    :return: The apartment listings in the form {'name': str, 'url': str, 'locality': str, 'price': str, 'images': list[str]}
+    """
     driver = setup_driver()
     try:
         get_through_consent(driver)
-        apartments_info = scrape_apartments(driver, APARTMENTS_TO_SCRAPE)
+        apartments_info = scrape_apartments(driver, app.config["SCRAPED_APARTMENTS"])
 
     finally:
         driver.close()
@@ -68,7 +72,9 @@ def scrape_apartments(driver, apartments_to_scrape):
     page = 1
     while len(apartments) < apartments_to_scrape:
         driver = get_url(driver, get_page_url(FLATS_URL, page))
-        apartments += scrape_single_page(driver)
+        scraped = scrape_single_page(driver)
+        app.logger.info(f"Page {page} scraped - {len(scraped)} apartments added")
+        apartments += scraped
         page += 1
 
     return apartments[:apartments_to_scrape]
@@ -90,7 +96,7 @@ def scrape_single_page(driver):
     Scrape a single page for all apartment listings
 
     :param driver: driver to use with the page already loaded
-    :return: Information about the apartment listings on the current page in the form {'name': str, 'locality': str, 'price': str, 'images': list[str]}
+    :return: Information about the apartment listings on the current page in the form {'name': str, 'url': str, 'locality': str, 'price': str, 'images': list[str]}
     """
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CLASS_NAME, "dir-property-list"))
@@ -105,16 +111,24 @@ def get_aparment_info(apartment_listing):
     Get all of the information about a single apartment listing
 
     :param apartment_listing: The listing to get information about
-    :return: Information about apartment listing in the form {'name': str, 'locality': str, 'price': str, 'images': list[str]}
+    :return: Information about apartment listing in the form {'name': str, 'url': str, 'locality': str, 'price': str, 'images': list[str]}
     """
-    name = get_element_text(get_element_by_class(apartment_listing, "span", "name"))
+    name_element = get_element_by_class(apartment_listing, "span", "name")
+    name = get_element_text(name_element)
+    url = get_parent(name_element).get_attribute("href")
     locality = get_element_text(
         get_element_by_class(apartment_listing, "span", "locality")
     )
     price = get_element_text(get_element_by_class(apartment_listing, "span", "price"))
     images = get_apartment_image_urls(apartment_listing)
 
-    return {"name": name, "locality": locality, "price": price, "images": images}
+    return {
+        "name": name,
+        "url": url,
+        "locality": locality,
+        "price": price,
+        "images": images,
+    }
 
 
 def get_element_text(element):
@@ -131,7 +145,7 @@ def get_apartment_image_urls(apartment_listing) -> list[str]:
     urls = []
     for img in apartment_listing.find_elements(By.TAG_NAME, "img"):
         urls.append(img.get_attribute("src"))
-    return urls
+    return urls[:6]
 
 
 def get_apartment_list(driver) -> list[any]:
@@ -149,7 +163,14 @@ def get_element_by_class(parent_element, tag: str, class_name: str):
     return parent_element.find_element(By.CSS_SELECTOR, f"{tag}.{class_name}")
 
 
-def get_url(driver, url, sleep_min=0.5, sleep_max=1):
+def get_parent(element):
+    """
+    Get the direct parent of a selected element
+    """
+    return element.find_element(By.XPATH, "..")
+
+
+def get_url(driver, url, sleep_min=0.3, sleep_max=0.7):
     """
     Load the driver with a new url
     """
