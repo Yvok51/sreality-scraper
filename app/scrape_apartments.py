@@ -71,9 +71,12 @@ def scrape_apartments(driver, apartments_to_scrape):
     apartments = []
     page = 1
     while len(apartments) < apartments_to_scrape:
-        driver = get_url(driver, get_page_url(FLATS_URL, page))
+        url = get_page_url(FLATS_URL, page)
+        driver = get_url(driver, url)
         scraped = scrape_single_page(driver)
-        app.logger.info(f"Page {page} scraped - {len(scraped)} apartments added")
+        app.logger.info(
+            f"Page {page} ({url}) scraped - {len(scraped)} apartments added"
+        )
         apartments += scraped
         page += 1
 
@@ -88,7 +91,7 @@ def get_page_url(base, page_number):
     :param page_number: The number to set the page query variable to
     :return: The base url with a query containing page=page_number
     """
-    return base + urlencode({"page": page_number})
+    return base + "?" + urlencode({"page": page_number})
 
 
 def scrape_single_page(driver):
