@@ -14,6 +14,7 @@ class Apartment(db.Model):
 
     def get_json_serializible(self):
         return {
+            "id": self.id,
             "name": self.name,
             "url": self.url,
             "locality": self.locality,
@@ -31,4 +32,4 @@ class Image(db.Model):
         return f"<Image {self.url}>"
 
     def get_json_serializible(self):
-        return {"url": self.url}
+        return {"id": self.id, "url": self.url}
