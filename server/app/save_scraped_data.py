@@ -3,6 +3,9 @@ from app.models import Apartment, Image
 
 
 def init_db():
+    """
+    Initialize the database i.e. scrape the apartments and insert them into the database
+    """
     app.logger.info("Starting scraping...")
     apartments = scrape_apartments.scrape_info()
     app.logger.info(f"Scraping done - {len(apartments)} apartments scraped")
@@ -13,6 +16,12 @@ def init_db():
 
 
 def create_apartments(apartments):
+    """
+    Create the Apartment objects to insert into database
+
+    :param apartments: Information about apartments to insert
+    :return: The Apartment objects to insert
+    """
     data = []
     for apart in apartments:
         apartment = Apartment(
@@ -28,4 +37,11 @@ def create_apartments(apartments):
 
 
 def create_images(apartment: Apartment, image_urls: list[str]):
+    """
+    Create the Image objects which we will insert into database
+
+    :param apartment: The apartment the images belong to
+    :param image_urls: The images to add
+    :return: The created Image objects
+    """
     return [Image(url=url, apartment=apartment) for url in image_urls]

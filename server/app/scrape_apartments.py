@@ -40,6 +40,8 @@ def setup_driver():
 
     :return: Selenium Firefox webdriver ready for scraping
     """
+    # We use Selenium because sreality.cz loads the apartments using js
+    # and as such we need to execute it beforehand
     opts = Options()
     opts.add_argument("-headless")
     assert opts.headless

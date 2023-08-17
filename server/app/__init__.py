@@ -44,6 +44,9 @@ def is_populated():
     return apartments > 0
 
 
+# Use the MAGRATION_DONE to know wheter the database tables are done (and we are runnning the server itself as well).
+# Otherwise this executes even when we run `flask db upgrade` and I could not find a way to register a function to run
+# only when the server is actually starting
 if os.environ.get("MIGRATION_DONE"):
     with app.app_context():
         # app.logger.info("Deleting any previous scraped apartments")

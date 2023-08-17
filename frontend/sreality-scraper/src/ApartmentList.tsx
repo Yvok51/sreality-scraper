@@ -92,6 +92,7 @@ export default function ApartmentList() {
   );
 }
 
+// Split the Apartment list into two parts to reuse the header in the instance no apartments are returned
 function ApartmentHeader({
   perPage,
   handlePerPageChange,
