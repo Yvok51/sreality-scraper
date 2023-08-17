@@ -2,6 +2,7 @@ import { useState } from 'react';
 import useGet from './useGet';
 import Listing from './Listing';
 import { Pagination } from './Pagination';
+import './assets/css/ApartmentList.css';
 
 const APARTMENTS_URL = '/api/apartment';
 
@@ -62,31 +63,34 @@ export default function ApartmentList() {
 
   const listings = data.apartments.map(apart => {
     return (
-      <Listing
-        key={apart.id}
-        name={apart.name}
-        url={apart.url}
-        locality={apart.locality}
-        price={apart.price}
-        images={apart.images.map(img => img.url)}
-      />
+      <div key={apart.id} className="item-line-between">
+        <Listing
+          name={apart.name}
+          url={apart.url}
+          locality={apart.locality}
+          price={apart.price}
+          images={apart.images.map(img => img.url)}
+        />
+      </div>
     );
   });
 
   return (
-    <section aria-labelledby="apartment-heading">
-      <header>
-        <h2 id="apartment-heading">Apartment listing</h2>
-      </header>
-      <div>
-        <label htmlFor="per-page">Per page:</label>
-        <select name="per-page" defaultValue={`${perPage}`} onChange={e => setPerPage(+e.target.value)}>
-          <option value="20">20</option>
-          <option value="40">40</option>
-          <option value="60">60</option>
-        </select>
+    <section aria-labelledby="apartment-heading" className="flex-column-around">
+      <div className="apartment-list-header">
+        <header>
+          <h2 id="apartment-heading">Apartment listing</h2>
+        </header>
+        <div className="per-page">
+          <label htmlFor="per-page">Per page: </label>
+          <select name="per-page" defaultValue={`${perPage}`} onChange={e => handlePerPageChange(+e.target.value)}>
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="60">60</option>
+          </select>
+        </div>
       </div>
-      {listings}
+      <div className="flex-column-line-between">{listings}</div>
       <footer>
         <Pagination pageClick={handlePageChange} page={page} maxPage={data.pages_count} />
       </footer>

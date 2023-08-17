@@ -1,0 +1,28 @@
+@import 'common.css';
+
+.pagination {
+    display: flex;
+    flex-direction: row;
+    gap: 0.4em;
+}
+
+.pagination-btn {
+    border-radius: 1em;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+}
+
+.pagination-btn.link-pagination-btn {
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+
+.pagination-btn.link-pagination-btn:hover {
+    border-color: var(--outline-color);
+}
+
+.pagination-btn.curr-pagination-btn {
+    cursor: default;
+    color: var(--outline-color);
+    border-color: var(--outline-color);
+}

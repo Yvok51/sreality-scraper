@@ -1,0 +1,71 @@
+@import 'common.css';
+
+
+.flex-column-around {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 5em;
+}
+
+.flex-column-line-between {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.item-line-between {
+	flex: 1 1 auto;
+	padding: 4em 0em;
+	border-bottom: 1px solid var(--secondary-color);
+	width: 100%;
+}
+
+.item-line-between:last-child {
+    border: none;
+}
+
+.apartment-list-header {
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+    width: 100%;
+}
+
+@media screen and (min-width: 1000px) {
+    .apartment-list-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: end;
+        width: 100%;
+    }
+}
+
+.per-page::after {
+	content: '<>';
+	color: var(--secondary-color);
+	-webkit-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	transform: rotate(90deg);
+	position: relative;
+	right: 1.5em;
+	display: inline-block;
+    pointer-events: none;
+}
+
+.per-page > select {
+    appearance: none;
+    padding: .5em;
+    border: 1px solid var(--secondary-color);
+    width: 100px;
+    border-radius: 1em;
+    background-color: var(--primary-bg-color);
+}
+
+.apartment-list-header > header {
+    font-size: 3em;
+}

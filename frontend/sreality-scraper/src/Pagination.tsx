@@ -1,4 +1,5 @@
 import { FunctionComponent } from 'react';
+import './assets/css/Pagination.css';
 
 interface PaginationProps {
   pageClick: (page: number) => void;
