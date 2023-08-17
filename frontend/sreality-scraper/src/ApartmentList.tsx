@@ -41,6 +41,13 @@ export default function ApartmentList() {
     setPage(page);
   }
 
+  function handlePerPageChange(newPerPage: number) {
+    if (newPerPage !== perPage) {
+      setPage(1);
+      setPerPage(newPerPage);
+    }
+  }
+
   if (loading) {
     return <h1>Loading...</h1>;
   }
