@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import useGet from './useGet';
 import Listing from './Listing';
 import { Pagination } from './Pagination';
@@ -57,8 +57,15 @@ export default function ApartmentList() {
     return <h1>Error: {error.message}</h1>;
   }
 
-  if (!data || !data.apartments) {
-    return <h1>Nothing here</h1>;
+  const noApartments = !data || !data.apartments;
+  if (noApartments) {
+    return (
+      <ApartmentHeader perPage={perPage} handlePerPageChange={perPage => {}}>
+        <div>
+          <p>We are sorry, no data is available</p>
+        </div>
+      </ApartmentHeader>
+    );
   }
 
   const listings = data.apartments.map(apart => {
@@ -76,6 +83,21 @@ export default function ApartmentList() {
   });
 
   return (
+    <ApartmentHeader perPage={perPage} handlePerPageChange={handlePerPageChange}>
+      <div className="flex-column-line-between">{listings}</div>
+      <footer>
+        <Pagination pageClick={handlePageChange} page={page} maxPage={data.pages_count} />
+      </footer>
+    </ApartmentHeader>
+  );
+}
+
+function ApartmentHeader({
+  perPage,
+  handlePerPageChange,
+  children,
+}: PropsWithChildren<{ perPage: number; handlePerPageChange: (newPerPage: number) => void }>) {
+  return (
     <section aria-labelledby="apartment-heading" className="flex-column-around">
       <div className="apartment-list-header">
         <header>
@@ -90,10 +112,7 @@ export default function ApartmentList() {
           </select>
         </div>
       </div>
-      <div className="flex-column-line-between">{listings}</div>
-      <footer>
-        <Pagination pageClick={handlePageChange} page={page} maxPage={data.pages_count} />
-      </footer>
+      {children}
     </section>
   );
 }
