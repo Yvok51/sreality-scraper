@@ -18,6 +18,11 @@
     }
 }
 
+* {
+    color: var(--primary-color);
+    background-color: var(--primary-bg-color);
+}
+
 .primary-colors {
     color: var(--primary-color);
     background-color: var(--primary-bg-color);
