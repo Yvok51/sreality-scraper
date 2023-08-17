@@ -15,31 +15,41 @@ export const Pagination: FunctionComponent<PaginationProps> = ({
   neighbours = 2,
   startPage = 1,
 }: PaginationProps) => {
+  const frontButton = page > startPage;
   const frontEllipses = page - neighbours - 1 > startPage;
   const backEllipses = page + neighbours + 1 < maxPage;
+  const backButton = page < maxPage;
 
-  const frontNeighbours = Array.from(Array(neighbours))
+  const frontNeighbours = Array.from(Array(neighbours).keys())
     .map(n => n + page - neighbours)
     .filter(n => n > startPage)
-    .map(pageNumber => <PaginationButton pageClick={pageClick} pageNumber={pageNumber} />);
-  const backNeighbours = Array.from(Array(neighbours))
+    .map(pageNumber => <PaginationButton key={pageNumber} pageClick={pageClick} pageNumber={pageNumber} />);
+  const backNeighbours = Array.from(Array(neighbours).keys())
     .map(n => n + page + 1)
     .filter(n => n < maxPage)
-    .map(pageNumber => <PaginationButton pageClick={pageClick} pageNumber={pageNumber} />);
+    .map(pageNumber => <PaginationButton key={pageNumber} pageClick={pageClick} pageNumber={pageNumber} />);
 
   return (
-    <nav>
-      <PaginationButton pageClick={pageClick} pageNumber={startPage} />
+    <nav className="pagination">
+      {frontButton ? <PaginationButton pageClick={pageClick} pageNumber={startPage} /> : null}
       {frontEllipses ? <p>...</p> : null}
       {frontNeighbours}
-      <PaginationButton pageClick={pageClick} pageNumber={page} />
+      <CurrentPaginationButton pageNumber={page} />
       {backNeighbours}
       {backEllipses ? <p>...</p> : null}
-      <PaginationButton pageClick={pageClick} pageNumber={maxPage} />
+      {backButton ? <PaginationButton pageClick={pageClick} pageNumber={maxPage} /> : null}
     </nav>
   );
 };
 
 function PaginationButton({ pageClick, pageNumber }: { pageClick: (page: number) => void; pageNumber: number }) {
-  return <button onClick={() => pageClick(pageNumber)}>{pageNumber}</button>;
+  return (
+    <button className="pagination-btn link-pagination-btn secondary-colors" onClick={() => pageClick(pageNumber)}>
+      {pageNumber}
+    </button>
+  );
+}
+
+function CurrentPaginationButton({ pageNumber }: { pageNumber: number }) {
+  return <button className="pagination-btn curr-pagination-btn secondary-colors">{pageNumber}</button>;
 }
