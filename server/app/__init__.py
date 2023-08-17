@@ -34,13 +34,21 @@ if not app.debug:
 
 
 def delete_previous():
-    app.logger.info("Deleting any previous scraped apartments")
     models.Image.query.delete()
     models.Apartment.query.delete()
 
 
-with app.app_context():
-    delete_previous()
-    app.logger.info("Starting scraping and database initialization")
-    save_scraped_data.init_db()
-    app.logger.info("Apartments scraped, starting server...")
+def is_populated():
+    apartments = models.Apartment.query.count()
+    app.logger.info(f"Apartments in database: {apartments}")
+    return apartments > 0
+
+
+if os.environ.get("MIGRATION_DONE"):
+    with app.app_context():
+        # app.logger.info("Deleting any previous scraped apartments")
+        # delete_previous()
+        if not is_populated():
+            app.logger.info("Starting scraping and database initialization")
+            save_scraped_data.init_db()
+        app.logger.info("Apartments scraped, starting server...")

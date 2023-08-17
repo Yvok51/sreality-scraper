@@ -3,14 +3,13 @@ import useGet from './useGet';
 import Listing from './Listing';
 import { Pagination } from './Pagination';
 
-const API_URL = new URL('http://localhost:5000/api');
-const APARTMENTS_URL = new URL('/apartment', API_URL);
+const APARTMENTS_URL = '/api/apartment';
 
-function create_url(base: URL, searchParams: URLSearchParams): URL {
-  return new URL('?' + searchParams.toString(), base);
+function create_url(base: string, searchParams: URLSearchParams): string {
+  return base.toString() + '?' + searchParams.toString();
 }
 
-function apartment_url(page: number, perPage: number) {
+function apartment_url(page: number, perPage: number): string {
   return create_url(APARTMENTS_URL, new URLSearchParams({ page: page.toString(), per_page: perPage.toString() }));
 }
 

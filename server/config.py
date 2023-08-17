@@ -8,4 +8,4 @@ class Config(object):
         or "postgresql://postgres:postgres@localhost/postgres"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SCRAPED_APARTMENTS = 500
+    SCRAPED_APARTMENTS = int(os.environ.get("SCRAPED_APARTMENTS") or "500")

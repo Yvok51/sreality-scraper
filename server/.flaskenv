@@ -1,1 +1,1 @@
-FLASK_APP=scraper.y
+FLASK_APP=scraper.py

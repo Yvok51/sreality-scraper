@@ -29,11 +29,3 @@ def create_apartments(apartments):
 
 def create_images(apartment: Apartment, image_urls: list[str]):
     return [Image(url=url, apartment=apartment) for url in image_urls]
-
-
-#    images = []
-#    for url in image_urls:
-#        image = Image(url=url)
-#        image.apartment = apartment
-#        images.append(image)
-#    return images
